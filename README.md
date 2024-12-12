@@ -17,9 +17,6 @@
 1. To use other APIs, uncomment the `REST_FRAMEWORK` dictionary in the `settings.py` file.
 2. Pass the access token obtained in step 2 as a Bearer token in the `Authorization` field of the API request.
 
-## Note
-
-This project is currently in the development phase. The master branch has been pushed, and updates will be made soon.
 
 ## API Endpoints
 
