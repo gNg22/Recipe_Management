@@ -23,7 +23,9 @@ This project is currently in the development phase. The master branch has been p
 
 ## API Endpoints
 
-- **Create User:** `POST /users/`
+- **Token Obtain Pair:** `POST /api/token/`
+- **Token Refresh:** `POST /api/token/refresh/`
+- **Create User:** `POST /create-user/`
 - **Recipe List:** `GET /recipes/`
 - **Recipe Create:** `POST /recipes/`
 - **Recipe Detail:** `GET /recipes/{id}/`
@@ -31,10 +33,9 @@ This project is currently in the development phase. The master branch has been p
 - **Recipe Delete:** `DELETE /recipes/{id}/`
 - **Bulk Upload:** `POST /recipes/bulk-upload/`
 - **Favorite Recipe:** `POST /recipes/{id}/favorite/`
-- **Download Recipe Card:** `GET /recipes/{id}/download/`
 - **Ingredients List:** `GET /ingredients/`
 - **Ingredient Recipes:** `GET /ingredients/{id}/recipes/`
-- **Recipe Category Durations:** `GET /recipes/category-durations/`
+- **Recipe Category Durations:** `GET /categories/durations/`
 
 ## API Collection
 
