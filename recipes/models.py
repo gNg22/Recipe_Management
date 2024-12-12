@@ -10,20 +10,20 @@ class UserProfile(models.Model):
         return self.user.username
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='ingredients/', null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 class Recipe(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=255)
     description = models.TextField()
     ingredients = models.ManyToManyField(Ingredient, related_name='recipes')
     instructions = models.TextField()

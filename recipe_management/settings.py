@@ -107,17 +107,17 @@ WSGI_APPLICATION = 'recipe_management.wsgi.application'
 
 # please comment this(REST_FRAMEWORK dict) user creating time
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#     ],
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ],
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=6),  # Set access token expiry time (default: 5 minutes)
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=6),  # Set access token expiry time (default: 5 minutes)
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # Set refresh token expiry time (default: 1 day)
 }
 

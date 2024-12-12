@@ -10,6 +10,7 @@ import os
 import pandas as pd
 from .models import *
 from .serializers import *
+import json
 from reportlab.lib.pagesizes import letter
 from rest_framework.parsers import MultiPartParser, FormParser
 from reportlab.pdfgen import canvas
@@ -67,80 +68,74 @@ class RecipeListCreateView(APIView):
         if not request.user.userprofile.is_creator:
             return Response({"detail": "You must be a creator to create recipes."}, status=status.HTTP_403_FORBIDDEN)
 
-        serializer = RecipeSerializer(data=request.data)
+        try:
+            json_data = {
+                "title": request.data.get('title'),
+                "description": request.data.get('description'),
+                "prep_duration": request.data.get('prep_duration'),
+                "cook_duration": request.data.get('cook_duration'),
+                "ingredients": request.data.get('ingredients', '').split(','),
+                "categories": request.data.get('categories', '').split(','),
+                "instructions": [step.strip() for step in request.data.get('instructions', '').split("\n")],
+            }
+        except Exception as e:
+            return Response({"error": f"Error parsing form data: {str(e)}"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if not json_data['title']:
+            return Response({"error": "'title' field is missing in form data"}, status=status.HTTP_400_BAD_REQUEST)
+
+        recipe_folder = os.path.join(settings.MEDIA_ROOT, 'recipes', json_data['title'])
+
+        if not os.path.exists(recipe_folder):
+            os.makedirs(recipe_folder)
+
+        thumbnail_image = request.FILES.get('thumbnail_image')
+        if thumbnail_image:
+            thumbnail_image_path = os.path.join(recipe_folder, thumbnail_image.name)
+            with open(thumbnail_image_path, 'wb') as f:
+                for chunk in thumbnail_image.chunks():
+                    f.write(chunk)
+            json_data['thumbnail_image'] = thumbnail_image_path
+
+        step_images_zip = request.FILES.get('step_by_step_zip_file')
+        if step_images_zip:
+            step_folder = os.path.join(recipe_folder, 'steps')
+            if not os.path.exists(step_folder):
+                os.makedirs(step_folder)
+
+            with zipfile.ZipFile(step_images_zip, 'r') as zip_ref:
+                zip_ref.extractall(step_folder)
+
+            for i, step in enumerate(json_data['instructions']):
+                step_image_name = f'step_{i + 1}.jpg'
+                step_image_path = os.path.join('steps', step_image_name)
+                json_data['instructions'][i] = {
+                    "step_number": i + 1,
+                    "step_description": step.strip(),
+                    "step_image": step_image_path
+                }
+
+        ingredient_images_zip = request.FILES.get('ingredient_zip_file')
+        if ingredient_images_zip:
+            ingredient_folder = os.path.join(recipe_folder, 'ingredients')
+            if not os.path.exists(ingredient_folder):
+                os.makedirs(ingredient_folder)
+
+            with zipfile.ZipFile(ingredient_images_zip, 'r') as zip_ref:
+                zip_ref.extractall(ingredient_folder)
+
+            for i, ingredient in enumerate(json_data['ingredients']):
+                ingredient_image_name = f'{ingredient.strip()}.jpg'
+                ingredient_image_path = os.path.join('ingredients', ingredient_image_name)
+                json_data['ingredients'][i] = {
+                    "name": ingredient.strip(),
+                    "image": ingredient_image_path
+                }
+
+        serializer = RecipeSerializer(data=json_data)
         if serializer.is_valid():
-            recipe = serializer.save(creator=request.user)
-
-            # Add ingredients and categories
-            if 'ingredients' in request.data:
-                ingredient_names = request.data['ingredients'].split(',')
-                for name in ingredient_names:
-                    ingredient, created = Ingredient.objects.get_or_create(name=name.strip())
-                    recipe.ingredients.add(ingredient)
-
-            if 'categories' in request.data:
-                category_names = request.data['categories'].split(',')
-                for name in category_names:
-                    category, created = Category.objects.get_or_create(name=name.strip())
-                    recipe.categories.add(category)
-
-            # Handle thumbnail image upload
-            if 'thumbnail_image' in request.FILES:
-                recipe.thumbnail_image = request.FILES['thumbnail_image']
-                recipe.save()
-
-            # Extract and store ingredient images from the zip file
-            if 'ingredient_zip_file' in request.FILES:
-                ingredient_zip = request.FILES['ingredient_zip_file']
-                ingredient_zip_file = zipfile.ZipFile(ingredient_zip)
-                ingredient_folder = os.path.join(settings.MEDIA_ROOT, 'ingredients')
-                os.makedirs(ingredient_folder, exist_ok=True)
-
-                # Extract ingredient images
-                for file_name in ingredient_zip_file.namelist():
-                    if file_name.endswith(('jpg', 'jpeg', 'png')):
-                        file_data = ingredient_zip_file.read(file_name)
-                        image = ContentFile(file_data)
-
-                        # Remove any directory structure from the file name (e.g., 'ingredient/tomato.jpg' => 'tomato.jpg')
-                        base_file_name = os.path.basename(file_name)
-                        image_name = os.path.join(ingredient_folder, base_file_name)
-
-                        with open(image_name, 'wb') as f:
-                            f.write(file_data)
-
-                        # Create Ingredient object linked to this image
-                        ingredient_name = os.path.splitext(base_file_name)[
-                            0]  # Ingredient name is file name without extension
-                        ingredient, created = Ingredient.objects.get_or_create(name=ingredient_name)
-                        ingredient.image = image_name
-                        ingredient.save()
-                        recipe.ingredients.add(ingredient)
-
-            # Extract and store step-by-step images from the zip file
-            if 'step_by_step_zip_file' in request.FILES:
-                step_zip = request.FILES['step_by_step_zip_file']
-                step_zip_file = zipfile.ZipFile(step_zip)
-                step_folder = os.path.join(settings.MEDIA_ROOT, 'recipes', 'steps')
-                os.makedirs(step_folder, exist_ok=True)
-
-                # Extract step images
-                for file_name in step_zip_file.namelist():
-                    if file_name.endswith(('jpg', 'jpeg', 'png')):
-                        file_data = step_zip_file.read(file_name)
-                        image = ContentFile(file_data)
-
-                        # Remove any directory structure from the file name (e.g., 'steps/step1.jpg' => 'step1.jpg')
-                        base_file_name = os.path.basename(file_name)
-                        image_name = os.path.join(step_folder, base_file_name)
-
-                        with open(image_name, 'wb') as f:
-                            f.write(file_data)
-
-                        # Create StepByStepPicture object
-                        step_image = StepByStepPicture(recipe=recipe, image=image_name)
-                        step_image.save()
-
+            serializer.save(creator=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
