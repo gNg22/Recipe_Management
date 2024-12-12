@@ -1,0 +1,212 @@
+{
+	"info": {
+		"_postman_id": "fc07f1d3-2e80-4652-b7a5-8a48b96a249d",
+		"name": "Recipe_management_api_collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34879162",
+		"_collection_link": "https://artivaticai.postman.co/workspace/296719fa-8801-4343-86c7-5d5e828ee5e5/collection/34879162-fc07f1d3-2e80-4652-b7a5-8a48b96a249d?action=share&source=collection_link&creator=34879162"
+	},
+	"item": [
+		{
+			"name": "http://127.0.0.1:8000/recipes/",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "Tomato Pasta",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "A delicious tomato pasta recipe.",
+							"type": "text"
+						},
+						{
+							"key": "prep_duration",
+							"value": "10",
+							"type": "text"
+						},
+						{
+							"key": "cook_duration",
+							"value": "20",
+							"type": "text"
+						},
+						{
+							"key": "ingredients",
+							"value": "Tomato, Pasta, Olive Oil, Garlic, Salt, Pepper",
+							"type": "text"
+						},
+						{
+							"key": "categories",
+							"value": "italian",
+							"type": "text"
+						},
+						{
+							"key": "instructions",
+							"value": "1. Boil water and cook pasta. 2. Heat olive oil in a pan, add garlic and sauté. 3. Add chopped tomatoes and cook for 10 minutes. 4. Combine pasta and sauce. Serve hot.\n",
+							"type": "text"
+						},
+						{
+							"key": "thumbnail_image",
+							"type": "file",
+							"src": "/home/mandakinitiwari/Music/thumbnail/tomato_pasta_thumb.jpg"
+						},
+						{
+							"key": "ingredient_zip_file",
+							"type": "file",
+							"src": "/home/mandakinitiwari/Music/ingredient.zip"
+						},
+						{
+							"key": "step_by_step_zip_file",
+							"type": "file",
+							"src": "/home/mandakinitiwari/Music/steps.zip"
+						},
+						{
+							"key": "",
+							"value": "true",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/recipes/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"recipes",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:8000/create-user/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"climbax\",\n  \"password\": \"climbax@123\",\n  \"role\": \"creator\"   \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/create-user/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"create-user",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "http://127.0.0.1:8000/create-user/",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"climbax\",\n  \"password\": \"climbax@123\",\n  \"role\": \"creator\"   \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/create-user/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"create-user",
+								""
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 11 Dec 2024 22:32:17 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.8.20"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept, origin, Cookie"
+						},
+						{
+							"key": "Allow",
+							"value": "POST, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "495"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzOTU2NjM3LCJpYXQiOjE3MzM5NTYzMzcsImp0aSI6IjU5M2IwYmUxNGUzZTRlM2I5MTg5MDBlNTA1YzFhNWM0IiwidXNlcl9pZCI6NH0.xcDxGxlMNV9i9D3V5e5cDMA-TWMaMH6CCxqV5p9OzRA\",\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNDA0MjczNywiaWF0IjoxNzMzOTU2MzM3LCJqdGkiOiIxODc3YmQwZTIxMzA0OGM0OWExMmExMThkYTUyZDUxNiIsInVzZXJfaWQiOjR9.mpyLrRLhGtjczNBxcpQ_0G1QfTWKiGUxbxJuL4s5tCc\"\n}"
+				}
+			]
+		}
+	]
+}
